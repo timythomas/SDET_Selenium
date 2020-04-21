@@ -1,0 +1,13 @@
+[
+{
+"users": {
+"gender":"Female",
+"firstName":"Ria",
+"lastName":"Sammy",
+"emailAddress": "rian@gmail.com",
+"password": "test@1234",
+"birthday":"11-Mar-1996",
+"phoneNumber":"+34965865784"
+}
+}
+]
