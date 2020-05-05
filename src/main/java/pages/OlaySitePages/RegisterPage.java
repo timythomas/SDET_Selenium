@@ -65,23 +65,34 @@ public class RegisterPage extends BaseClass {
 		return driver.findElement(header).getText();
 	}
 
-	public static void verifyHeader2(String lang) {
-		if (lang.equals("UK")) {
+	public static void verifyHeader2(String country) {
+		if (country.equals("UK")) {
 
-		} else if (lang.equals("Germany")) {
+		} else if (country.equals("Germany")) {
 
-		} else if (lang.equals("Spain")) {
+		} else if (country.equals("Spain")) {
 
 		}
 		String headerVal = driver.findElement(descriptionLabel).getText();
 		assertTrue(headerVal.contains("Thank you for signing up to Club Olay!"));
 	}
 
-	public static void userRegister(HashMap<String, String> val, String lang)
-			throws InterruptedException, ParseException {
+	public static HashMap<String,String> userRegister(String country)
+			throws InterruptedException, ParseException, IOException, org.json.simple.parser.ParseException {
 		driver.findElement(registerLink).click();
+		Thread.sleep(5000);
 		Reporter.log("Register link clicked");
-		if (lang.equals("Germany") || lang.equals("Spain")) {
+		HashMap<String,String> val =new HashMap<String, String>();
+		if(country.equals("Germany") || country.equals("UK")) {
+		 val=registerValues();
+		}
+		else if(country.equals("Spain")) {
+			val=registerValuesSpanish();
+		}
+			
+
+		if (country.equals("Germany") || country.equals("Spain")) {
+			
 			if (val.get("Gender").equalsIgnoreCase("Female")) {
 				driver.findElement(femaleImage).click();
 			} else {
@@ -105,7 +116,7 @@ public class RegisterPage extends BaseClass {
 		Reporter.log("Birth Month selected");
 		selectDropdownValue(val.get("Year"), birthYearSelect);
 		Reporter.log("Birth Year selected");
-		if (lang.equals("Germany")) {
+		if (country.equals("Germany")) {
 			WebElement element = driver.findElement(countrySelect);
 			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 			Thread.sleep(5000);
@@ -118,13 +129,14 @@ public class RegisterPage extends BaseClass {
 			driver.findElement(cityInput).sendKeys(val.get("City"));
 			Reporter.log("City entered");
 		}
-		if (lang.equals("Spain")) {
+		if (country.equals("Spain")) {
 			driver.findElement(phoneInput).sendKeys(val.get("phoneNumber"));
 			Reporter.log("Phone number enetered");
 			driver.findElement(checkbox).click();
 		}
 		registerButton();
 		Thread.sleep(5000);
+		return val;
 
 	}
 
@@ -136,7 +148,7 @@ public class RegisterPage extends BaseClass {
 		Reporter.log("Register button clicked");
 	}
 
-	public static HashMap<String, String> registerValuesUK(HashMap<String, String> val) throws ParseException {
+	/*public static HashMap<String, String> registerValuesUK(HashMap<String, String> val) throws ParseException {
 		HashMap<String, String> registerVal = new HashMap<String, String>();
 		registerVal.put("EmailAddress", generateRandomUser(val.get("EmailAddress")));
 		registerVal.put("Password", val.get("Password"));
@@ -145,7 +157,7 @@ public class RegisterPage extends BaseClass {
 		registerVal.put("Month", dt[1]);
 		registerVal.put("Year", dt[2]);
 		return registerVal;
-	}
+	}*/
 
 	public static String generateRandomUser(String emailAddress) {
 		Random randomGenerator = new Random();
@@ -173,12 +185,12 @@ public class RegisterPage extends BaseClass {
 
 	}
 
-	public static HashMap<String, String> registerValuesGermany() throws ParseException, IOException {
+	public static HashMap<String, String> registerValues() throws ParseException, IOException {
 		HashMap<String, String> registerVal = new HashMap<String, String>();
 		registerVal.put("Gender", ExcelReader.readExcelData(1, 0));
 		registerVal.put("FirstName", ExcelReader.readExcelData(1, 1));
 		registerVal.put("LastName", ExcelReader.readExcelData(1, 2));
-		registerVal.put("EmailAddress", ExcelReader.readExcelData(1, 3));
+		registerVal.put("EmailAddress", generateRandomUser(ExcelReader.readExcelData(1, 3)));
 		registerVal.put("Password", ExcelReader.readExcelData(1, 4));
 		String[] dt = dateParse(ExcelReader.readExcelData(1, 5)).split("-");
 		registerVal.put("Day", dt[0]);

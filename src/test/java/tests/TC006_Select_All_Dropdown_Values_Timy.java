@@ -14,9 +14,9 @@ public class TC006_Select_All_Dropdown_Values_Timy extends BaseClass{
 	public static void clickAndPrintItem() throws InterruptedException {
 		driver.get("https://demoqa.com/selectmenu/");
 		Assert.assertEquals(SelectMenuPage.verifyHeader(), "Selectmenu");
-		SelectMenuPage.selectSpeedMenu();
-		SelectMenuPage.selectFilesMenu();
-		SelectMenuPage.selectNumberMenu();
-		SelectMenuPage.selectTitleMenu();
+		SelectMenuPage.selectSpeedMenuAndVerify();
+		SelectMenuPage.selectFilesMenuAndVerify();
+		SelectMenuPage.selectNumberMenuAndVerify();
+		SelectMenuPage.selectTitleMenuAndVerify();
 	}
 }
