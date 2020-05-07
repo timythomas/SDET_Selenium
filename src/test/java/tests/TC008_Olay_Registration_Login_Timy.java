@@ -31,7 +31,8 @@ public class TC008_Olay_Registration_Login_Timy extends BaseClass {
 		regVals.put("EmailAddress", "tia12@gmail.com");
 		regVals.put("Password", "Wipro@123");
 		LoginPage.userLogin(regVals,country);
-		LoginPage.verifyInvalidLogin("The email and password combination you entered is incorrect. Please try again, or click the link below to create an account.");
+		Thread.sleep(5000);
+		LoginPage.verifyInvalidLogin(country);
 	}
 	
 	@Test
@@ -40,6 +41,6 @@ public class TC008_Olay_Registration_Login_Timy extends BaseClass {
 		LoginPage.loginLanguage(country);
 		HashMap<String,String> regVals= new HashMap<String, String>();
 		regVals.put("EmailAddress", "ria@gmail.com");
-		LoginPage.verifyforgotPwd(regVals, "We have sent an email to your email address,");
+		LoginPage.verifyforgotPwd(regVals,country );
 	}
 }

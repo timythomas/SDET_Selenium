@@ -27,7 +27,9 @@ public class LoginPage extends BaseClass {
 
 	static By header = By.xpath("//h1");
 	static By signInLink=By.xpath("//a[@class='event_profile_login']");
-	static By emailInput=By.cssSelector("input#phdesktopbody_0_username");
+	static By emailInput=By.xpath("(//input[@id='phdesktopbody_0_username'])[1]");
+	static By emailInput2=By.xpath("(//input[@id='phdesktopbody_0_username'])[2]");
+	
 	static By passwordInput=By.xpath("//input[@type='password']");
 	static By signInButton=By.xpath("//input[@type='submit']");
 	static By invalidFieldErrorMsg=By.cssSelector("#phdesktopbody_0_Message");
@@ -35,6 +37,7 @@ public class LoginPage extends BaseClass {
 	static By logoutButton=By.xpath("//a[@id='phdesktopheader_0_phdesktopheadertop_2_LogOffLink']");
 	static By confirmLogoutButton=By.cssSelector("a#phdesktopheader_0_phdesktopheadertop_2_anchrContinue");
 	static By afterForgotPasswordMsg=By.cssSelector("div#phdesktopbody_0_afterSubmit");
+	static By afterForgotPasswordSpainMsg=By.cssSelector("div#phdesktopbody_0_afterSubmit > div > h2");
 	static By nextButton=By.xpath("//input[@type='submit']");
 	
 	public LoginPage(WebDriver driver) {
@@ -77,18 +80,53 @@ public class LoginPage extends BaseClass {
 		driver.get(getProperty(language));		
 	}
 	
-	public static void verifyInvalidLogin(String expectVal) {
+	public static void verifyInvalidLogin(String lang) {
+		String expectVal="";
+		if(lang.equals("UK")) {
+			expectVal="The email and password combination you entered is incorrect. Please try again, or click the link below to create an account.";
+		}
+		else if(lang.equals("Germany")) {
+			expectVal="Die eingegebene Kombination aus Passwort und E-Mail-Adresse ist ungültig.";
+
+		}
+		else if(lang.equals("Spain")) {
+			expectVal="La combinación de correo electrónico y la contraseña que has introducido es incorrecta.";
+		}
 		String errorMsg=driver.findElement(invalidFieldErrorMsg).getText();
+		
+		
 		assertTrue(errorMsg.contains(expectVal));
+		
+		
 	}
-	public static void verifyforgotPwd(HashMap<String, String> val,String expectVal) {
+	public static void verifyforgotPwd(HashMap<String, String> val,String lang) throws InterruptedException {
+		String expectVal="", errorMsg="";
+
 		driver.findElement(signInLink).click();
 
 		driver.findElement(forgotPassword).click();
 		driver.findElement(emailInput).sendKeys(val.get("EmailAddress"));
+		if(lang.equals("Spain")) {
+			driver.findElement(emailInput2).sendKeys(val.get("EmailAddress"));
+
+		}
 		Reporter.log("Enter Email Id");
 		driver.findElement(nextButton).click();
-		String errorMsg=driver.findElement(afterForgotPasswordMsg).getText();
+		Thread.sleep(5000);
+		if(lang.equals("UK")) {
+			expectVal="We have sent an email to your email address,";
+			 errorMsg=driver.findElement(afterForgotPasswordMsg).getText();
+		}
+		else if(lang.equals("Germany")) {
+			expectVal="E-Mail-Adresse gesendet.";
+			 errorMsg=driver.findElement(afterForgotPasswordMsg).getText();
+		}
+		else if(lang.equals("Spain")) {
+			expectVal="Recibirá un correo electrónico muy pronto con un enlace para restablecer su contraseña.";
+				errorMsg=driver.findElement(afterForgotPasswordSpainMsg).getText();
+
+		}
+		
 		assertTrue(errorMsg.contains(expectVal));
 	}
 }
